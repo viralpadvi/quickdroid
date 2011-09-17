@@ -81,6 +81,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 	private SearchHistoryComposer mSearchHistoryComposer;
 	private BaseAdapter mListAdapter;
 	private EditText mSearchText;
+	private View mClearSearchText;
 	private SharedPreferences mSettings;
 	private Launchable mActiveLaunchable;
 	private InputMethodManager mInputMethodManager;
@@ -128,10 +129,12 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				deactivateLaunchable();
 				if (searchText.length() > 0) {
 					setListAdapter(mSearchResultComposer);
-					mSearchResultComposer.search(mSearchText.getText().toString());	
+					mSearchResultComposer.search(mSearchText.getText().toString());
+					mClearSearchText.setVisibility(View.VISIBLE);
 				} else {
 					setListAdapter(mSearchHistoryComposer);
 					mSearchResultComposer.search(null);
+					mClearSearchText.setVisibility(View.GONE);
 				}
 			}
         });
@@ -215,7 +218,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
         };
         
         if (mSettings.getBoolean(Preferences.PREF_SPEECH_RECOGNIZER, false)) {
-	        ImageButton speechRecognizer = (ImageButton) findViewById(R.id.speechRecognizer);
+	        View speechRecognizer = findViewById(R.id.speechRecognizer);
 	        speechRecognizer.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {					
@@ -233,10 +236,13 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 				}
 	        });
 	        speechRecognizer.setVisibility(View.VISIBLE);
+	        mSearchText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.placeholder2, 0);
+        } else {
+        	mSearchText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.placeholder1, 0);
         }
         
-        ImageButton clearSearchText = (ImageButton) findViewById(R.id.clearSearchText);
-        clearSearchText.setOnClickListener(new OnClickListener() {
+        mClearSearchText = findViewById(R.id.clearSearchText);
+        mClearSearchText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				mSearchText.setText("");
@@ -585,7 +591,7 @@ public class Quickdroid extends ListActivity implements OnGesturePerformedListen
 		quickdroidIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, quickdroidIntent, 0);
 		notification.flags |= (Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
-		notification.setLatestEventInfo(context, context.getText(R.string.appName), null, pendingIntent);
+		notification.setLatestEventInfo(context, context.getText(R.string.appName), context.getText(R.string.appDesc), pendingIntent);
 		notificationManager.notify(QUICK_LAUNCH_THUMBNAIL_ID, notification);
 	}
 	

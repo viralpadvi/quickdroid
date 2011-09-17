@@ -15,6 +15,7 @@
 -->
 <resources>
     <string name="appName">Quickdroid</string>
+    <string name="appDesc">Quickly search, find and launch apps, contacts, bookmarks and music</string>
     <string name="appSettings">Settings</string>
     <string name="searchHint">Type to search</string>
     <string name="miscellaneous">Miscellaneous</string>
